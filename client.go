@@ -60,6 +60,32 @@ func (client *Client) menu() bool{
 	}
 }
 
+func (client *Client) PublicChat() {
+	//提示用户输入信息
+	var chatMsg string
+	fmt.Println(">>>>请输入聊天内容，exit推出.")
+	fmt.Scanln(&chatMsg)
+
+	for chatMsg!="exit"{
+		//发给服务器
+
+		if len(chatMsg)!=0{
+			sendMsg:=chatMsg+"\n"
+			_,err := client.conn.Write([]byte(sendMsg))
+			if err != nil{
+				fmt.Println("conn Write err:",err)
+				break
+			}
+		}
+
+		chatMsg=""
+		fmt.Println(">>>>请输入聊天内容，exit推出.")
+		fmt.Scanln(&chatMsg)
+	}
+
+	
+}
+
 func (client *Client) UpdateName() bool{
 	fmt.Println(">>>>请输入用户名:")
 	fmt.Scanln(&client.Name)
@@ -80,7 +106,7 @@ func (client *Client) Run(){
 		//根据不同模式处理不同业务
 		switch client.flag{
 		case 1:
-			fmt.Println("公聊模式...")
+			client.PublicChat()
 			break
 		case 2:
 			fmt.Println("私聊模式...")
